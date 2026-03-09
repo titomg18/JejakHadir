@@ -19,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // register role middleware alias since RouteServiceProvider is missing
+        \Illuminate\Support\Facades\Route::aliasMiddleware('role', \App\Http\Middleware\CheckRole::class);
     }
 }
