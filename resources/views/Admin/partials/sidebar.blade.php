@@ -54,10 +54,13 @@
                 <i class="fas fa-cog"></i>
                 <span class="ml-3">Pengaturan</span>
             </a>
-            <a href="#" class="menu-item flex items-center px-4 py-3 text-red-500 hover:bg-red-50/50">
-                <i class="fas fa-sign-out-alt text-red-400"></i>
-                <span class="ml-3">Keluar</span>
-            </a>
+            <form method="POST" action="/logout" class="inline">
+                @csrf
+                <button type="submit" class="menu-item flex items-center px-4 py-3 text-red-500 hover:bg-red-50/50 w-full text-left">
+                    <i class="fas fa-sign-out-alt text-red-400"></i>
+                    <span class="ml-3">Keluar</span>
+                </button>
+            </form>
         </div>
     </nav>
 
