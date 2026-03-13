@@ -159,7 +159,7 @@
         </div>
 
         <!-- Login form -->
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ url('/login') }}">
             @csrf
 
             <!-- Email field with icon -->

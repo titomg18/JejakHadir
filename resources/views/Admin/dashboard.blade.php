@@ -17,7 +17,6 @@
         body {
             background: #f9fafc;
         }
-        /* Glassmorphism modern */
         .glass-card {
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(12px);
@@ -32,7 +31,6 @@
             transform: translateY(-2px);
             box-shadow: 0 20px 30px -10px rgba(59, 130, 246, 0.15);
         }
-        /* Sidebar modern */
         .sidebar {
             background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(20px);
@@ -61,7 +59,6 @@
         .menu-item.active i {
             color: #3b82f6;
         }
-        /* Progress bar mini */
         .progress-bar {
             height: 6px;
             background: #e5e7eb;
@@ -74,7 +71,6 @@
             border-radius: 10px;
             width: 0%;
         }
-        /* Table style */
         .table-row-hover:hover {
             background: rgba(59, 130, 246, 0.04);
         }
@@ -84,107 +80,14 @@
 
     <div class="flex h-screen overflow-hidden bg-[#f9fafc]">
         <!-- Sidebar -->
-        <aside class="sidebar fixed md:static inset-y-0 left-0 w-72 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out z-30 md:z-0 flex flex-col shadow-xl md:shadow-none">
-            <!-- Logo area -->
-            <div class="px-6 py-6">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-200">
-                        <i class="fas fa-qrcode text-white text-lg"></i>
-                    </div>
-                    <span class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">JejakHadir</span>
-                </div>
-                <p class="text-xs text-gray-400 mt-1 ml-1">Admin panel v2.0</p>
-            </div>
-
-            <!-- Profile card -->
-            <div class="mx-4 p-4 bg-white/40 rounded-2xl border border-white/60 mb-4">
-                <div class="flex items-center space-x-3">
-                    <div class="w-12 h-12 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center text-blue-600 text-xl">
-                        <i class="fas fa-user-circle"></i>
-                    </div>
-                    <div>
-                        <p class="font-semibold text-gray-800">Admin Utama</p>
-                        <p class="text-xs text-gray-500">admin@jejakhadir.sch.id</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Navigation -->
-            <nav class="flex-1 overflow-y-auto px-4 space-y-1">
-                <a href="#" class="menu-item active flex items-center px-4 py-3 text-gray-700">
-                    <i class="fas fa-chart-pie"></i>
-                    <span class="ml-3">Dashboard</span>
-                </a>
-                <a href="#" class="menu-item flex items-center px-4 py-3 text-gray-600">
-                    <i class="fas fa-users-cog"></i>
-                    <span class="ml-3">Kelola User</span>
-                </a>
-                <a href="#" class="menu-item flex items-center px-4 py-3 text-gray-600">
-                    <i class="fas fa-chalkboard"></i>
-                    <span class="ml-3">Kelola Kelas</span>
-                </a>
-                <a href="#" class="menu-item flex items-center px-4 py-3 text-gray-600">
-                    <i class="fas fa-chalkboard-teacher"></i>
-                    <span class="ml-3">Kelola Guru</span>
-                </a>
-                <a href="#" class="menu-item flex items-center px-4 py-3 text-gray-600">
-                    <i class="fas fa-user-graduate"></i>
-                    <span class="ml-3">Kelola Murid</span>
-                </a>
-                <div class="pt-6 mt-4 border-t border-white/50">
-                    <a href="#" class="menu-item flex items-center px-4 py-3 text-gray-600">
-                        <i class="fas fa-file-alt"></i>
-                        <span class="ml-3">Laporan</span>
-                    </a>
-                    <a href="#" class="menu-item flex items-center px-4 py-3 text-gray-600">
-                        <i class="fas fa-cog"></i>
-                        <span class="ml-3">Pengaturan</span>
-                    </a>
-                    <a href="#" class="menu-item flex items-center px-4 py-3 text-red-500 hover:bg-red-50/50">
-                        <i class="fas fa-sign-out-alt text-red-400"></i>
-                        <span class="ml-3">Keluar</span>
-                    </a>
-                </div>
-            </nav>
-
-            <!-- Sidebar footer -->
-            <div class="p-5 text-xs text-gray-400 border-t border-white/50">
-                <p>© 2025 JejakHadir</p>
-                <p>v1.2.0</p>
-            </div>
-        </aside>
+        @include('Admin.partials.sidebar')
 
         <!-- Main content -->
         <main class="flex-1 overflow-y-auto">
-            <!-- Navbar baru - Opsi 1: Solid putih clean -->
-            <div class="sticky top-0 z-20 bg-white border-b border-gray-200 px-4 sm:px-6 py-2 flex items-center justify-between shadow-sm">
-                <button id="sidebarToggle" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
-                    <i class="fas fa-bars text-gray-600 text-xl"></i>
-                </button>
-                
-                <!-- Search bar (desktop only) -->
-                <div class="hidden md:block flex-1 max-w-md mx-auto lg:mx-0 lg:ml-4">
-                    <div class="relative">
-                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
-                        <input type="text" placeholder="Cari..." class="w-full border border-gray-200 rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200">
-                    </div>
-                </div>
+            <!-- Navbar -->
+            @include('Admin.partials.navbar')
 
-                <div class="flex items-center space-x-3">
-                    <button class="p-2 rounded-lg hover:bg-gray-100 relative">
-                        <i class="fas fa-bell text-gray-600"></i>
-                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
-                    </button>
-                    <div class="flex items-center space-x-2 pl-2 border-l border-gray-200">
-                        <span class="text-sm font-medium text-gray-700 hidden sm:block">Admin</span>
-                        <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-white text-sm font-semibold">
-                            A
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Dashboard content -->
+            <!-- Dashboard content dengan dummy data -->
             <div class="p-6 md:p-8">
                 <!-- Header -->
                 <div class="mb-8">
@@ -192,7 +95,7 @@
                     <p class="text-gray-500 mt-1">Kelola presensi pintar dengan mudah.</p>
                 </div>
 
-                <!-- Statistik cards dengan progress bar -->
+                <!-- Statistik cards dengan progress bar (dummy) -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     <div class="glass-card rounded-2xl p-6">
                         <div class="flex justify-between items-start">
@@ -271,7 +174,7 @@
                     </div>
                 </div>
 
-                <!-- Fitur utama dengan desain lebih menarik -->
+                <!-- Fitur utama dengan desain lebih menarik (dummy) -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                     <div class="glass-card rounded-2xl p-6 flex items-start space-x-4">
                         <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
@@ -302,7 +205,7 @@
                     </div>
                 </div>
 
-                <!-- Quick access cards -->
+                <!-- Quick access cards (dummy) -->
                 <div class="mb-8">
                     <h2 class="text-lg font-semibold text-gray-800 mb-4">Akses Cepat</h2>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -333,7 +236,7 @@
                     </div>
                 </div>
 
-                <!-- Tabel absensi dengan desain modern -->
+                <!-- Tabel absensi dengan desain modern (dummy) -->
                 <div>
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-lg font-semibold text-gray-800">Absensi Hari Ini</h2>
