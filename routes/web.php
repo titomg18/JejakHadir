@@ -43,6 +43,14 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('role:admin')
         ->name('admin.murid');
 
+    // Kelola Kelas (CRUD)
+Route::prefix('admin/kelas')->middleware('role:admin')->group(function () {
+    Route::get('/', [App\Http\Controllers\Admin\KelasController::class, 'index'])->name('admin.kelas');
+    Route::post('/', [App\Http\Controllers\Admin\KelasController::class, 'store'])->name('admin.kelas.store');
+    Route::put('/{id}', [App\Http\Controllers\Admin\KelasController::class, 'update'])->name('admin.kelas.update');
+    Route::delete('/{id}', [App\Http\Controllers\Admin\KelasController::class, 'destroy'])->name('admin.kelas.destroy');
+});
+
     Route::get('/guru/dashboard', function () {
         return view('Guru.dashboard');
     })->middleware('role:guru')->name('guru.dashboard');
