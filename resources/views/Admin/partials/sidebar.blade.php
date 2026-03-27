@@ -37,7 +37,7 @@
             <i class="fas fa-chalkboard"></i>
             <span class="ml-3">Kelola Kelas</span>
         </a>
-        <a href="#" class="menu-item flex items-center px-4 py-3 text-gray-600">
+        <a href="{{ route('admin.guru') }}" class="menu-item flex items-center px-4 py-3 {{ request()->routeIs('admin.guru') ? 'active text-gray-700' : 'text-gray-600' }}">
             <i class="fas fa-chalkboard-teacher"></i>
             <span class="ml-3">Kelola Guru</span>
         </a>

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\KelolaUserController;
+use App\Http\Controllers\Admin\KelolaGuruController;
 
 // Halaman utama
 Route::get('/', [AuthController::class, 'home'])->name('home');
@@ -31,6 +32,11 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/{id}', [KelolaUserController::class, 'update'])->name('admin.users.update');
         Route::delete('/{id}', [KelolaUserController::class, 'destroy'])->name('admin.users.destroy');
     });
+
+    // NEW: Kelola Guru (read-only)
+    Route::get('/admin/guru', [App\Http\Controllers\Admin\KelolaGuruController::class, 'index'])
+        ->middleware('role:admin')
+        ->name('admin.guru');
 
     Route::get('/guru/dashboard', function () {
         return view('Guru.dashboard');
