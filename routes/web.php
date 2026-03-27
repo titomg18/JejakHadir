@@ -38,6 +38,11 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('role:admin')
         ->name('admin.guru');
 
+    // Kelola Murid (read-only) - tambahkan ini
+    Route::get('/admin/murid', [App\Http\Controllers\Admin\KelolaMuridController::class, 'index'])
+        ->middleware('role:admin')
+        ->name('admin.murid');
+
     Route::get('/guru/dashboard', function () {
         return view('Guru.dashboard');
     })->middleware('role:guru')->name('guru.dashboard');
