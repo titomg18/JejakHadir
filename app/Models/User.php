@@ -46,4 +46,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // ... di dalam class User ...
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class);
+    }
 }

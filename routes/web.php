@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\KelolaUserController;
-use App\Http\Controllers\Admin\KelolaGuruController;
+use App\Http\Controllers\Admin\KelasController;
 
 // Halaman utama
 Route::get('/', [AuthController::class, 'home'])->name('home');
@@ -49,6 +49,11 @@ Route::prefix('admin/kelas')->middleware('role:admin')->group(function () {
     Route::post('/', [App\Http\Controllers\Admin\KelasController::class, 'store'])->name('admin.kelas.store');
     Route::put('/{id}', [App\Http\Controllers\Admin\KelasController::class, 'update'])->name('admin.kelas.update');
     Route::delete('/{id}', [App\Http\Controllers\Admin\KelasController::class, 'destroy'])->name('admin.kelas.destroy');
+
+     // Detail dan manajemen murid
+    Route::get('/{id}', [KelasController::class, 'show'])->name('admin.kelas.detail');
+    Route::post('/{id}/add-murid', [KelasController::class, 'addMurid'])->name('admin.kelas.addMurid');
+    Route::delete('/{kelasId}/remove-murid/{muridId}', [KelasController::class, 'removeMurid'])->name('admin.kelas.removeMurid');
 });
 
     Route::get('/guru/dashboard', function () {

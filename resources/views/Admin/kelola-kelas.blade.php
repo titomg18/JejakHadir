@@ -94,7 +94,7 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deskripsi</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Wali Kelas</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                            </tr>
+                             </tr>
                         </thead>
                         <tbody class="divide-y divide-white/30">
                             @forelse($kelas ?? [] as $index => $kelasItem)
@@ -106,6 +106,9 @@
                                     {{ $kelasItem->waliKelas->name ?? '-' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <a href="{{ route('admin.kelas.detail', $kelasItem->id) }}" class="text-green-600 hover:text-green-900 mr-3">
+                                        <i class="fas fa-eye"></i> Detail
+                                    </a>
                                     <button onclick="editKelas({{ $kelasItem->id }}, '{{ addslashes($kelasItem->nama_kelas) }}', '{{ addslashes($kelasItem->deskripsi) }}', '{{ $kelasItem->wali_kelas_id }}')" class="text-blue-600 hover:text-blue-900 mr-3">
                                         <i class="fas fa-edit"></i> Edit
                                     </button>

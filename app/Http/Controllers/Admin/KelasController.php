@@ -60,4 +60,46 @@ class KelasController extends Controller
 
         return redirect()->route('admin.kelas')->with('success', 'Kelas berhasil dihapus.');
     }
+
+    // Method detail kelas
+    public function show($id)
+    {
+        $kelas = Kelas::with('murids')->findOrFail($id);
+        // Ambil murid yang belum memiliki kelas
+        $muridTidakBerKelas = User::where('role', 'murid')->whereNull('kelas_id')->get();
+        return view('Admin.detail-kelas', compact('kelas', 'muridTidakBerKelas'));
+    }
+
+    // Menambah murid ke kelas
+    public function addMurid(Request $request, $id)
+    {
+        $kelas = Kelas::findOrFail($id);
+        $request->validate([
+            'murid_id' => 'required|exists:users,id',
+        ]);
+
+        $murid = User::findOrFail($request->murid_id);
+        if ($murid->role !== 'murid') {
+            return redirect()->back()->with('error', 'Hanya murid yang dapat ditambahkan ke kelas.');
+        }
+        if ($murid->kelas_id !== null) {
+            return redirect()->back()->with('error', 'Murid sudah memiliki kelas.');
+        }
+
+        $murid->kelas_id = $kelas->id;
+        $murid->save();
+
+        return redirect()->route('admin.kelas.detail', $kelas->id)->with('success', 'Murid berhasil ditambahkan ke kelas.');
+    }
+
+    // Mengeluarkan murid dari kelas
+    public function removeMurid($kelasId, $muridId)
+    {
+        $kelas = Kelas::findOrFail($kelasId);
+        $murid = User::where('id', $muridId)->where('kelas_id', $kelasId)->firstOrFail();
+        $murid->kelas_id = null;
+        $murid->save();
+
+        return redirect()->route('admin.kelas.detail', $kelas->id)->with('success', 'Murid berhasil dikeluarkan dari kelas.');
+    }
 }
