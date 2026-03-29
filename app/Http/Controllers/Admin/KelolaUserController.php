@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\Murid; // Import Murid model
+use App\Models\Murid; // Import model Murid
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -49,13 +49,20 @@ class KelolaUserController extends Controller
             ]);
         }
 
+        // Jika role guru, buat data guru dengan default kosong
+        if ($request->role === 'guru') {
+            \App\Models\Guru::create([
+                'user_id' => $user->id,
+            ]);
+        }
+
         return redirect()->route('admin.users')->with('success', 'User berhasil ditambahkan.');
     }
 
     public function edit($id)
     {
         $user = User::findOrFail($id);
-        $users = User::all(); // Untuk list users
+        $users = User::all();
         return view('Admin.kelola-user', compact('user', 'users'));
     }
 
@@ -93,25 +100,5 @@ class KelolaUserController extends Controller
         $user->delete();
 
         return redirect()->route('admin.users')->with('success', 'User berhasil dihapus.');
-    }
-
-    public function store(Request $request)
-    {
-        // ... validation ...
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $request->role,
-        ]);
-
-        if ($request->role === 'murid') {
-            \App\Models\Murid::create(['user_id' => $user->id]);
-        } elseif ($request->role === 'guru') {
-            \App\Models\Guru::create(['user_id' => $user->id]);
-        }
-
-        return redirect()->route('admin.users')->with('success', 'User berhasil ditambahkan.');
     }
 }

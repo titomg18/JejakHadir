@@ -36,13 +36,13 @@
                 <i class="fas fa-chalkboard-teacher w-6 group-hover:text-indigo-600"></i>
                 <span class="ml-3 font-medium">Kelas</span>
             </a>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-xl transition group">
+            <a href="{{ route('guru.absensi') }}" class="flex items-center px-4 py-3 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-xl transition group {{ request()->routeIs('guru.absensi') ? 'bg-indigo-50 text-indigo-600 border-l-4 border-indigo-600' : '' }}">
                 <i class="fas fa-clipboard-list w-6 group-hover:text-indigo-600"></i>
                 <span class="ml-3 font-medium">Absensi</span>
             </a>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-xl transition group">
+            <a href="{{ route('guru.qrcode') }}" class="flex items-center px-4 py-3 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-xl transition group {{ request()->routeIs('guru.qrcode') ? 'bg-indigo-50 text-indigo-600 border-l-4 border-indigo-600' : '' }}">
                 <i class="fas fa-qrcode w-6 group-hover:text-indigo-600"></i>
-                <span class="ml-3 font-medium">QR-Code</span>
+                <span class="ml-3 font-medium">QR Code</span>
             </a>
         </nav>
 

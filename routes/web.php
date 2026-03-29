@@ -17,18 +17,16 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 });
 
-// Logout (harus sudah login)
+// Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
-// Dashboard berdasarkan role (dilindungi middleware auth dan role)
+// Dashboard berdasarkan role
 Route::middleware(['auth'])->group(function () {
-    // Admin routes
+    
+    // ===================== ADMIN ROUTES =====================
     Route::middleware('role:admin')->group(function () {
-        Route::get('/admin/dashboard', function () {
-            return view('Admin.dashboard');
-        })->name('admin.dashboard');
+        Route::get('/admin/dashboard', fn() => view('Admin.dashboard'))->name('admin.dashboard');
 
-        // Kelola Users
         Route::prefix('admin/users')->group(function () {
             Route::get('/', [KelolaUserController::class, 'index'])->name('admin.users');
             Route::get('/create', [KelolaUserController::class, 'create'])->name('admin.users.create');
@@ -38,50 +36,47 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/{id}', [KelolaUserController::class, 'destroy'])->name('admin.users.destroy');
         });
 
-        // Kelola Guru (read-only)
         Route::get('/admin/guru', [KelolaGuruController::class, 'index'])->name('admin.guru');
-
-        // Kelola Murid (read-only)
         Route::get('/admin/murid', [KelolaMuridController::class, 'index'])->name('admin.murid');
 
-        // Kelola Kelas (CRUD)
         Route::prefix('admin/kelas')->group(function () {
             Route::get('/', [KelasController::class, 'index'])->name('admin.kelas');
             Route::post('/', [KelasController::class, 'store'])->name('admin.kelas.store');
             Route::put('/{id}', [KelasController::class, 'update'])->name('admin.kelas.update');
             Route::delete('/{id}', [KelasController::class, 'destroy'])->name('admin.kelas.destroy');
-
-            // Detail dan manajemen murid
             Route::get('/{id}', [KelasController::class, 'show'])->name('admin.kelas.detail');
             Route::post('/{id}/add-murid', [KelasController::class, 'addMurid'])->name('admin.kelas.addMurid');
             Route::delete('/{kelasId}/remove-murid/{muridId}', [KelasController::class, 'removeMurid'])->name('admin.kelas.removeMurid');
         });
+
+        // Detail murid & guru (edit data pribadi)
+        Route::prefix('admin/murid')->group(function () {
+            Route::get('/{id}/edit', [App\Http\Controllers\Admin\KelolaMuridDetailController::class, 'edit'])->name('admin.murid.detail.edit');
+            Route::put('/{id}', [App\Http\Controllers\Admin\KelolaMuridDetailController::class, 'update'])->name('admin.murid.detail.update');
+        });
+        Route::prefix('admin/guru')->group(function () {
+            Route::put('/{id}', [App\Http\Controllers\Admin\KelolaGuruDetailController::class, 'update'])->name('admin.guru.detail.update');
+        });
     });
 
-    // Guru routes
+    // ===================== GURU ROUTES =====================
     Route::middleware('role:guru')->group(function () {
-        Route::get('/guru/dashboard', function () {
-            return view('Guru.dashboard');
-        })->name('guru.dashboard');
-
+        Route::get('/guru/dashboard', fn() => view('Guru.dashboard'))->name('guru.dashboard');
         Route::get('/guru/kelas', [GuruKelasController::class, 'index'])->name('guru.kelas');
+        Route::get('/guru/absensi', [App\Http\Controllers\Guru\AbsensiController::class, 'index'])->name('guru.absensi');
+        Route::post('/guru/absensi/{userId}/update', [App\Http\Controllers\Guru\AbsensiController::class, 'updateStatus'])->name('guru.absensi.update');
+        Route::get('/guru/qrcode', [App\Http\Controllers\Guru\QRCodeController::class, 'index'])->name('guru.qrcode');
+        Route::get('/guru/qrcode/refresh', [App\Http\Controllers\Guru\QRCodeController::class, 'refresh'])->name('guru.qrcode.refresh');
     });
 
-    // Murid routes
+    // ===================== MURID ROUTES =====================
     Route::middleware('role:murid')->group(function () {
-        Route::get('/murid/dashboard', function () {
-            return view('Murid.dashboard');
-        })->name('murid.dashboard');
-    });
-
-    // Kelola Murid Detail (edit data pribadi)
-    Route::prefix('admin/murid')->middleware('role:admin')->group(function () {
-    Route::get('/{id}/edit', [App\Http\Controllers\Admin\KelolaMuridDetailController::class, 'edit'])->name('admin.murid.detail.edit');
-    Route::put('/{id}', [App\Http\Controllers\Admin\KelolaMuridDetailController::class, 'update'])->name('admin.murid.detail.update');
-    });
-
-    // Kelola Guru Detail (edit data pribadi)
-    Route::prefix('admin/guru')->middleware('role:admin')->group(function () {
-        Route::put('/{id}', [App\Http\Controllers\Admin\KelolaGuruDetailController::class, 'update'])->name('admin.guru.detail.update');
+        Route::get('/murid/dashboard', [App\Http\Controllers\Murid\MuridController::class, 'dashboard'])->name('murid.dashboard');
+        Route::get('/murid/scan', [App\Http\Controllers\Murid\MuridController::class, 'scan'])->name('murid.scan');
+        Route::get('/murid/history', [App\Http\Controllers\Murid\MuridController::class, 'history'])->name('murid.history');
+        Route::get('/murid/profile', [App\Http\Controllers\Murid\MuridController::class, 'profile'])->name('murid.profile');
+        
+        // Endpoint untuk scan QR (dipanggil saat murid melakukan scan)
+        Route::get('/absensi/scan', [App\Http\Controllers\AbsensiScanController::class, 'scan'])->name('absensi.scan');
     });
 });
