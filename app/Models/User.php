@@ -57,4 +57,8 @@ class User extends Authenticatable
     {
         return $this->hasOne(Murid::class);
     }
+    public function guru()
+    {
+        return $this->hasOne(Guru::class);
+    }
 }

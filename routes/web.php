@@ -75,8 +75,13 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Kelola Murid Detail (edit data pribadi)
-Route::prefix('admin/murid')->middleware('role:admin')->group(function () {
+    Route::prefix('admin/murid')->middleware('role:admin')->group(function () {
     Route::get('/{id}/edit', [App\Http\Controllers\Admin\KelolaMuridDetailController::class, 'edit'])->name('admin.murid.detail.edit');
     Route::put('/{id}', [App\Http\Controllers\Admin\KelolaMuridDetailController::class, 'update'])->name('admin.murid.detail.update');
-});
+    });
+
+    // Kelola Guru Detail (edit data pribadi)
+    Route::prefix('admin/guru')->middleware('role:admin')->group(function () {
+        Route::put('/{id}', [App\Http\Controllers\Admin\KelolaGuruDetailController::class, 'update'])->name('admin.guru.detail.update');
+    });
 });

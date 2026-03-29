@@ -94,4 +94,24 @@ class KelolaUserController extends Controller
 
         return redirect()->route('admin.users')->with('success', 'User berhasil dihapus.');
     }
+
+    public function store(Request $request)
+    {
+        // ... validation ...
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => $request->role,
+        ]);
+
+        if ($request->role === 'murid') {
+            \App\Models\Murid::create(['user_id' => $user->id]);
+        } elseif ($request->role === 'guru') {
+            \App\Models\Guru::create(['user_id' => $user->id]);
+        }
+
+        return redirect()->route('admin.users')->with('success', 'User berhasil ditambahkan.');
+    }
 }
