@@ -75,11 +75,12 @@
                             <div class="overflow-x-auto">
                                 <table class="min-w-full divide-y divide-gray-200">
                                     <thead class="bg-gray-50">
-                                        <tr>
+                                        32
                                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
                                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Murid</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NIS / NISN</th>
                                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NIS/NISN</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. Telp Orang Tua</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-100">
@@ -87,8 +88,15 @@
                                             <tr class="table-row-hover">
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $index + 1 }}</td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $murid->name }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                                    @if($murid->murid)
+                                                        {{ $murid->murid->nis ?? '-' }} / {{ $murid->murid->nisn ?? '-' }}
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $murid->email }}</td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $murid->nis ?? '-' }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $murid->murid->no_telp_orang_tua ?? '-' }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -104,7 +112,6 @@
         @include('Guru.partials.footer')
     </main>
 
-    <!-- JavaScript untuk toggle sidebar (sama seperti dashboard) -->
     <script>
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
@@ -114,11 +121,13 @@
         function openSidebar() {
             sidebar.classList.remove('-translate-x-full');
             overlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeSidebar() {
             sidebar.classList.add('-translate-x-full');
             overlay.classList.add('hidden');
+            document.body.style.overflow = '';
         }
 
         toggleBtn.addEventListener('click', openSidebar);

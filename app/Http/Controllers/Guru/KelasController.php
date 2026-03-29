@@ -11,8 +11,9 @@ class KelasController extends Controller
     public function index()
     {
         $guru = Auth::user();
-        // Ambil kelas yang wali kelasnya adalah guru yang sedang login
-        $kelas = Kelas::with('murids')->where('wali_kelas_id', $guru->id)->get();
+        // Ambil kelas yang wali kelasnya adalah guru yang login, serta muat murid dan data pribadi murid
+        $kelas = Kelas::with(['murids', 'murids.murid'])->where('wali_kelas_id', $guru->id)->get();
+        
         return view('Guru.kelas', compact('kelas'));
     }
 }
