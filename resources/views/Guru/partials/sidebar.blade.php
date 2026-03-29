@@ -32,7 +32,7 @@
                 <i class="fas fa-tachometer-alt w-6 {{ request()->routeIs('guru.dashboard') ? 'text-indigo-600' : 'group-hover:text-indigo-600' }}"></i>
                 <span class="ml-3 font-medium">Dashboard</span>
             </a>
-            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-xl transition group">
+            <a href="{{ route('guru.kelas') }}" class="flex items-center px-4 py-3 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-xl transition group {{ request()->routeIs('guru.kelas') ? 'bg-indigo-50 text-indigo-600 border-l-4 border-indigo-600' : '' }}">
                 <i class="fas fa-chalkboard-teacher w-6 group-hover:text-indigo-600"></i>
                 <span class="ml-3 font-medium">Kelas</span>
             </a>
