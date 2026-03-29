@@ -73,4 +73,10 @@ Route::middleware(['auth'])->group(function () {
             return view('Murid.dashboard');
         })->name('murid.dashboard');
     });
+
+    // Kelola Murid Detail (edit data pribadi)
+Route::prefix('admin/murid')->middleware('role:admin')->group(function () {
+    Route::get('/{id}/edit', [App\Http\Controllers\Admin\KelolaMuridDetailController::class, 'edit'])->name('admin.murid.detail.edit');
+    Route::put('/{id}', [App\Http\Controllers\Admin\KelolaMuridDetailController::class, 'update'])->name('admin.murid.detail.update');
+});
 });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Murid; // Import Murid model
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -34,12 +35,19 @@ class KelolaUserController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
         ]);
+
+        // Jika role murid, buat data murid dengan default kosong
+        if ($request->role === 'murid') {
+            Murid::create([
+                'user_id' => $user->id,
+            ]);
+        }
 
         return redirect()->route('admin.users')->with('success', 'User berhasil ditambahkan.');
     }

@@ -55,22 +55,21 @@
         .table-row-hover:hover {
             background: rgba(59, 130, 246, 0.04);
         }
+        /* Modal styling */
+        .modal {
+            transition: opacity 0.25s ease;
+        }
     </style>
 </head>
 <body class="antialiased">
 
     <div class="flex h-screen overflow-hidden bg-[#f9fafc]">
-        <!-- Sidebar (gunakan partial) -->
         @include('Admin.partials.sidebar')
 
-        <!-- Main content -->
         <main class="flex-1 overflow-y-auto">
-            <!-- Navbar -->
             @include('Admin.partials.navbar')
 
-            <!-- Content -->
             <div class="p-6 md:p-8">
-                <!-- Header -->
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
                     <div>
                         <h1 class="text-3xl font-bold text-gray-800">Kelola Murid</h1>
@@ -87,6 +86,7 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                               </tr>
                         </thead>
                         <tbody class="divide-y divide-white/30">
@@ -100,10 +100,21 @@
                                         Murid
                                     </span>
                                 </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    @if($murid->murid)
+                                        <button 
+                                            onclick="openEditModal({{ $murid->murid->id }}, '{{ addslashes($murid->name) }}', '{{ addslashes($murid->murid->nis ?? '') }}', '{{ addslashes($murid->murid->nisn ?? '') }}', '{{ addslashes($murid->murid->tempat_lahir ?? '') }}', '{{ $murid->murid->tanggal_lahir ? $murid->murid->tanggal_lahir->format('Y-m-d') : '' }}', '{{ $murid->murid->jenis_kelamin ?? '' }}', '{{ addslashes($murid->murid->alamat ?? '') }}', '{{ addslashes($murid->murid->no_telp_orang_tua ?? '') }}')"
+                                            class="text-indigo-600 hover:text-indigo-900">
+                                            <i class="fas fa-edit"></i> Edit Data
+                                        </button>
+                                    @else
+                                        <span class="text-gray-400">Data tidak tersedia</span>
+                                    @endif
+                                </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="4" class="px-6 py-4 text-center text-gray-500">Belum ada murid terdaftar.</td>
+                                <td colspan="5" class="px-6 py-4 text-center text-gray-500">Belum ada murid terdaftar.</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -117,8 +128,66 @@
         </main>
     </div>
 
-    <!-- Sidebar toggle script (sama seperti di dashboard) -->
+    <!-- Modal Edit Data Murid -->
+    <div id="editMuridModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden modal items-center justify-center flex">
+        <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">Edit Data Murid</h3>
+                <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="editMuridForm" method="POST">
+                @csrf
+                @method('PUT')
+                <input type="hidden" id="murid_id" name="murid_id">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                    <input type="text" id="nama" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 bg-gray-100" readonly disabled>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">NIS</label>
+                    <input type="text" name="nis" id="nis" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-200">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">NISN</label>
+                    <input type="text" name="nisn" id="nisn" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-200">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tempat Lahir</label>
+                    <input type="text" name="tempat_lahir" id="tempat_lahir" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-200">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir</label>
+                    <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-200">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin</label>
+                    <select name="jenis_kelamin" id="jenis_kelamin" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-200">
+                        <option value="">-- Pilih --</option>
+                        <option value="L">Laki-laki</option>
+                        <option value="P">Perempuan</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
+                    <textarea name="alamat" id="alamat" rows="3" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-200"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">No. Telp Orang Tua</label>
+                    <input type="text" name="no_telp_orang_tua" id="no_telp_orang_tua" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-200">
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeEditModal()" class="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50">Batal</button>
+                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-lg">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sidebar toggle script (sama seperti sebelumnya) -->
     <script>
+        // Sidebar toggle (as in previous code)
         const sidebar = document.querySelector('aside');
         const toggleBtn = document.getElementById('sidebarToggle');
         const backdrop = document.createElement('div');
@@ -157,6 +226,49 @@
                 document.body.style.overflow = '';
             }
         });
+
+        // Modal logic - FIXED
+        const modal = document.getElementById('editMuridModal');
+        const form = document.getElementById('editMuridForm');
+        // Use a placeholder that will be replaced later
+        const updateUrlBase = '{{ route("admin.murid.detail.update", ":id") }}';
+
+        function openEditModal(id, nama, nis, nisn, tempat_lahir, tanggal_lahir, jenis_kelamin, alamat, no_telp_orang_tua) {
+            document.getElementById('murid_id').value = id;
+            document.getElementById('nama').value = nama;
+            document.getElementById('nis').value = nis;
+            document.getElementById('nisn').value = nisn;
+            document.getElementById('tempat_lahir').value = tempat_lahir;
+            document.getElementById('tanggal_lahir').value = tanggal_lahir;
+            document.getElementById('jenis_kelamin').value = jenis_kelamin;
+            document.getElementById('alamat').value = alamat;
+            document.getElementById('no_telp_orang_tua').value = no_telp_orang_tua;
+
+            // Replace placeholder with actual ID
+            form.action = updateUrlBase.replace(':id', id);
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeEditModal() {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeEditModal();
+            }
+        });
+
+        // Show success/error messages if any
+        @if(session('success'))
+            alert('{{ session("success") }}');
+        @endif
+        @if($errors->any())
+            alert('{{ $errors->first() }}');
+        @endif
     </script>
 </body>
 </html>
