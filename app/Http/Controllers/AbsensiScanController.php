@@ -85,7 +85,7 @@ class AbsensiScanController extends Controller
         }
 
         $waktu     = now()->format('H:i');
-        $tanggal   = now()->translatedFormat('l, d F Y');
+        $tanggal   = now()->locale('id')->translatedFormat('l, d F Y');
         $namaKelas = $kelas->nama_kelas;
 
         $pesan = "✅ *Notifikasi Kehadiran JejakHadir*\n\n"
