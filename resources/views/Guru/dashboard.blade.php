@@ -5,12 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Guru Dashboard - JejakHadir</title>
-    <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Custom animation for sidebar */
         .sidebar-transition {
             transition: transform 0.3s ease-in-out;
         }
@@ -25,18 +22,15 @@
 </head>
 <body class="bg-gray-100 font-sans antialiased">
 
-    <!-- Sidebar Toggle Button (Mobile) -->
-    <button id="sidebarToggle" class="lg:hidden fixed top-4 left-4 z-50 bg-indigo-600 text-white p-3 rounded-lg shadow-lg focus:outline-none">
+    <!-- TOMBOL TOGGLE DI KIRI BAWAH -->
+    <button id="sidebarToggle" class="lg:hidden fixed bottom-4 left-4 z-50 bg-indigo-600 text-white p-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
         <i class="fas fa-bars text-xl"></i>
     </button>
 
-    <!-- Overlay for mobile sidebar -->
-    <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden lg:hidden transition-opacity"></div>
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 hidden lg:hidden transition-opacity"></div>
 
-    <!-- Sidebar -->
     @include('Guru.partials.sidebar')
 
-    <!-- Main Content -->
     <main class="lg:ml-64 min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-4 md:p-6 lg:p-8">
         <!-- Header Welcome -->
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
@@ -51,7 +45,7 @@
             </div>
         </div>
 
-        <!-- Statistik Cards -->
+        <!-- Statistik Cards (konten asli, tidak diubah) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             <!-- Total Kelas -->
             <div class="bg-white rounded-2xl shadow-md border border-gray-100 hover-lift overflow-hidden relative">
@@ -119,13 +113,12 @@
             </div>
         </div>
 
-        <!-- Fitur Utama Cards -->
+        <!-- Fitur Utama Cards (konten asli) -->
         <div class="mb-8">
             <h3 class="text-2xl font-bold text-gray-800 inline-block border-b-4 border-indigo-500 pb-2 pr-6">✨ Fitur Utama</h3>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            <!-- Kelas -->
-            <a href="#" class="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden">
+            <a href="{{ route('guru.kelas') }}" class="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden">
                 <div class="p-6 text-center">
                     <div class="w-20 h-20 bg-indigo-100 group-hover:bg-indigo-200 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
                         <i class="fas fa-chalkboard-teacher text-indigo-600 group-hover:text-indigo-700 text-3xl"></i>
@@ -137,7 +130,6 @@
                     Kelola sekarang <i class="fas fa-arrow-right ml-1"></i>
                 </div>
             </a>
-            <!-- Murid -->
             <a href="#" class="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden">
                 <div class="p-6 text-center">
                     <div class="w-20 h-20 bg-green-100 group-hover:bg-green-200 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
@@ -150,8 +142,7 @@
                     Lihat semua <i class="fas fa-arrow-right ml-1"></i>
                 </div>
             </a>
-            <!-- Absensi -->
-            <a href="#" class="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden">
+            <a href="{{ route('guru.absensi') }}" class="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden">
                 <div class="p-6 text-center">
                     <div class="w-20 h-20 bg-yellow-100 group-hover:bg-yellow-200 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
                         <i class="fas fa-clipboard-list text-yellow-600 group-hover:text-yellow-700 text-3xl"></i>
@@ -163,8 +154,7 @@
                     Lihat rekap <i class="fas fa-arrow-right ml-1"></i>
                 </div>
             </a>
-            <!-- QR-Code -->
-            <a href="#" class="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden">
+            <a href="{{ route('guru.qrcode') }}" class="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden">
                 <div class="p-6 text-center">
                     <div class="w-20 h-20 bg-purple-100 group-hover:bg-purple-200 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
                         <i class="fas fa-qrcode text-purple-600 group-hover:text-purple-700 text-3xl"></i>
@@ -178,137 +168,92 @@
             </a>
         </div>
 
-        <!-- Dua Kolom: Aktivitas & Info -->
+        <!-- Dua Kolom: Aktivitas & Info (konten asli) -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Tabel Aktivitas Terkini -->
             <div class="lg:col-span-2 bg-white rounded-2xl shadow-md border border-gray-100 p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-xl font-bold text-gray-800 flex items-center">
-                        <i class="fas fa-history text-indigo-500 mr-2"></i> Aktivitas Presensi Terkini
-                    </h3>
+                    <h3 class="text-xl font-bold text-gray-800 flex items-center"><i class="fas fa-history text-indigo-500 mr-2"></i> Aktivitas Presensi Terkini</h3>
                     <a href="#" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">Lihat semua <i class="fas fa-arrow-right ml-1"></i></a>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead>
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Murid</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kelas</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            </tr>
+                            <tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama Murid</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kelas</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Waktu</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th></tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Ahmad Fauzi</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">XII IPA 1</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">07:45</td>
-                                <td class="px-6 py-4 whitespace-nowrap"><span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 border border-green-200">Hadir</span></td>
-                            </tr>
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Siti Nurhaliza</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">XII IPA 2</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">07:50</td>
-                                <td class="px-6 py-4 whitespace-nowrap"><span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 border border-green-200">Hadir</span></td>
-                            </tr>
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Budi Santoso</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">XII IPA 1</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">07:55</td>
-                                <td class="px-6 py-4 whitespace-nowrap"><span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 border border-green-200">Hadir</span></td>
-                            </tr>
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Dewi Lestari</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">XII IPA 2</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">08:10</td>
-                                <td class="px-6 py-4 whitespace-nowrap"><span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 border border-yellow-200">Terlambat</span></td>
-                            </tr>
+                            <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Ahmad Fauzi</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">XII IPA 1</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">07:45</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full bg-green-100 text-green-800">Hadir</span></td></tr>
+                            <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Siti Nurhaliza</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">XII IPA 2</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">07:50</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full bg-green-100 text-green-800">Hadir</span></td></tr>
+                            <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Budi Santoso</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">XII IPA 1</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">07:55</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full bg-green-100 text-green-800">Hadir</span></td></tr>
+                            <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Dewi Lestari</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">XII IPA 2</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">08:10</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Terlambat</span></td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-
-            <!-- Panel Kanan -->
             <div class="space-y-6">
-                <!-- Notifikasi WhatsApp -->
                 <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl border border-green-200 p-6 shadow-md">
-                    <div class="flex items-start space-x-4">
-                        <div class="bg-green-500 text-white p-3 rounded-xl shadow-lg">
-                            <i class="fab fa-whatsapp text-2xl"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-gray-800">Notifikasi WhatsApp</h4>
-                            <p class="text-sm text-gray-600 mt-1">Setiap presensi akan langsung dilaporkan kepada orang tua via WhatsApp.</p>
-                            <span class="inline-block mt-3 text-xs bg-green-200 text-green-800 px-3 py-1 rounded-full">Aktif</span>
-                        </div>
-                    </div>
+                    <div class="flex items-start space-x-4"><div class="bg-green-500 text-white p-3 rounded-xl shadow-lg"><i class="fab fa-whatsapp text-2xl"></i></div><div><h4 class="font-bold text-gray-800">Notifikasi WhatsApp</h4><p class="text-sm text-gray-600 mt-1">Setiap presensi akan langsung dilaporkan kepada orang tua via WhatsApp.</p><span class="inline-block mt-3 text-xs bg-green-200 text-green-800 px-3 py-1 rounded-full">Aktif</span></div></div>
                 </div>
-
-                <!-- Grafik sederhana -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-6">
                     <h4 class="font-bold text-gray-800 flex items-center"><i class="fas fa-chart-line text-indigo-500 mr-2"></i> Kehadiran Minggu Ini</h4>
-                    <div class="mt-4 h-32 flex items-end space-x-2">
-                        <div class="w-1/6 bg-indigo-200 rounded-t-lg h-16 flex flex-col justify-end items-center text-xs text-indigo-700">Sen</div>
-                        <div class="w-1/6 bg-indigo-300 rounded-t-lg h-20 flex flex-col justify-end items-center text-xs text-indigo-800">Sel</div>
-                        <div class="w-1/6 bg-indigo-400 rounded-t-lg h-24 flex flex-col justify-end items-center text-xs text-indigo-900">Rab</div>
-                        <div class="w-1/6 bg-indigo-300 rounded-t-lg h-20 flex flex-col justify-end items-center text-xs text-indigo-800">Kam</div>
-                        <div class="w-1/6 bg-indigo-200 rounded-t-lg h-14 flex flex-col justify-end items-center text-xs text-indigo-700">Jum</div>
-                        <div class="w-1/6 bg-indigo-100 rounded-t-lg h-8 flex flex-col justify-end items-center text-xs text-indigo-600">Sab</div>
-                    </div>
+                    <div class="mt-4 h-32 flex items-end space-x-2"><div class="w-1/6 bg-indigo-200 rounded-t-lg h-16 flex flex-col justify-end items-center text-xs">Sen</div><div class="w-1/6 bg-indigo-300 rounded-t-lg h-20 flex flex-col justify-end items-center text-xs">Sel</div><div class="w-1/6 bg-indigo-400 rounded-t-lg h-24 flex flex-col justify-end items-center text-xs">Rab</div><div class="w-1/6 bg-indigo-300 rounded-t-lg h-20 flex flex-col justify-end items-center text-xs">Kam</div><div class="w-1/6 bg-indigo-200 rounded-t-lg h-14 flex flex-col justify-end items-center text-xs">Jum</div><div class="w-1/6 bg-indigo-100 rounded-t-lg h-8 flex flex-col justify-end items-center text-xs">Sab</div></div>
                     <p class="text-xs text-gray-500 mt-2 text-center">Rata-rata 85% kehadiran</p>
                 </div>
-
-                <!-- Jadwal Hari Ini -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-6">
                     <h4 class="font-bold text-gray-800 flex items-center"><i class="fas fa-clock text-indigo-500 mr-2"></i> Jadwal Hari Ini</h4>
-                    <ul class="mt-3 space-y-2 text-sm">
-                        <li class="flex justify-between"><span>📘 Matematika</span><span class="text-gray-500">07:30 - 09:00</span></li>
-                        <li class="flex justify-between"><span>📗 Fisika</span><span class="text-gray-500">09:15 - 10:45</span></li>
-                        <li class="flex justify-between"><span>📙 Kimia</span><span class="text-gray-500">11:00 - 12:30</span></li>
-                    </ul>
+                    <ul class="mt-3 space-y-2 text-sm"><li class="flex justify-between"><span>📘 Matematika</span><span class="text-gray-500">07:30 - 09:00</span></li><li class="flex justify-between"><span>📗 Fisika</span><span class="text-gray-500">09:15 - 10:45</span></li><li class="flex justify-between"><span>📙 Kimia</span><span class="text-gray-500">11:00 - 12:30</span></li></ul>
                 </div>
             </div>
         </div>
 
-        <!-- Footer -->
         @include('Guru.partials.footer')
     </main>
 
-    <!-- JavaScript untuk toggle sidebar -->
     <script>
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
         const toggleBtn = document.getElementById('sidebarToggle');
         const closeBtn = document.getElementById('closeSidebar');
 
+        function updateToggleVisibility() {
+            if (window.innerWidth >= 1024) {
+                if (toggleBtn) toggleBtn.style.display = 'none';
+            } else {
+                const isSidebarClosed = sidebar.classList.contains('-translate-x-full');
+                toggleBtn.style.display = isSidebarClosed ? 'flex' : 'none';
+            }
+        }
+
         function openSidebar() {
             sidebar.classList.remove('-translate-x-full');
             overlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            updateToggleVisibility();
         }
 
         function closeSidebar() {
             sidebar.classList.add('-translate-x-full');
             overlay.classList.add('hidden');
+            document.body.style.overflow = '';
+            updateToggleVisibility();
         }
 
-        toggleBtn.addEventListener('click', openSidebar);
-        closeBtn.addEventListener('click', closeSidebar);
-        overlay.addEventListener('click', closeSidebar);
+        if (toggleBtn) toggleBtn.addEventListener('click', openSidebar);
+        if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+        if (overlay) overlay.addEventListener('click', closeSidebar);
 
-        // Tutup sidebar saat layar di-resize ke lg
-        window.addEventListener('resize', function() {
+        window.addEventListener('resize', () => {
             if (window.innerWidth >= 1024) {
                 sidebar.classList.remove('-translate-x-full');
                 overlay.classList.add('hidden');
+                document.body.style.overflow = '';
             } else {
                 sidebar.classList.add('-translate-x-full');
             }
+            updateToggleVisibility();
         });
 
-        // Inisialisasi: pastikan sidebar tersembunyi di mobile saat load
-        if (window.innerWidth < 1024) {
-            sidebar.classList.add('-translate-x-full');
-        }
+        if (window.innerWidth < 1024) sidebar.classList.add('-translate-x-full');
+        updateToggleVisibility();
     </script>
 </body>
 </html>
