@@ -25,7 +25,9 @@ Route::middleware(['auth'])->group(function () {
     
     // ===================== ADMIN ROUTES =====================
     Route::middleware('role:admin')->group(function () {
-        Route::get('/admin/dashboard', fn() => view('Admin.dashboard'))->name('admin.dashboard');
+        Route::get('/admin/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
+
+        Route::get('/admin/laporan', [App\Http\Controllers\Admin\LaporanAbsensiController::class, 'index'])->name('admin.laporan');
 
         Route::prefix('admin/users')->group(function () {
             Route::get('/', [KelolaUserController::class, 'index'])->name('admin.users');

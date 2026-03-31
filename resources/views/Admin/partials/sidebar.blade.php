@@ -48,7 +48,7 @@
         </a>
         </a>
         <div class="pt-6 mt-4 border-t border-white/50">
-            <a href="#" class="menu-item flex items-center px-4 py-3 text-gray-600">
+            <a href="{{ route('admin.laporan') }}" class="menu-item flex items-center px-4 py-3 {{ request()->routeIs('admin.laporan') ? 'active text-gray-700' : 'text-gray-600' }}">
                 <i class="fas fa-file-alt"></i>
                 <span class="ml-3">Laporan</span>
             </a>
