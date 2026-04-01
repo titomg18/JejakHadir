@@ -1,259 +1,365 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Guru Dashboard - JejakHadir</title>
+    <title>Dashboard Guru | JejakHadir</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
-        .sidebar-transition {
-            transition: transform 0.3s ease-in-out;
+        * { font-family: 'Inter', sans-serif; }
+        body { background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 50%, #f5f3ff 100%); min-height: 100vh; }
+        .card {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.7);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.06);
         }
-        .hover-lift {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .hover-lift:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
+        .hover-lift { transition: all 0.2s ease; }
+        .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(79,70,229,0.12); }
+        .progress-bar { height: 6px; background: #e5e7eb; border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 6px; border-radius: 10px; transition: width 1.2s ease; }
     </style>
 </head>
-<body class="bg-gray-100 font-sans antialiased">
+<body class="antialiased">
 
-    <!-- TOMBOL TOGGLE DI KIRI BAWAH -->
-    <button id="sidebarToggle" class="lg:hidden fixed bottom-4 left-4 z-50 bg-indigo-600 text-white p-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
+    {{-- SIDEBAR TOGGLE MOBILE --}}
+    <button id="sidebarToggle" class="lg:hidden fixed bottom-4 left-4 z-50 bg-indigo-600 text-white p-3 rounded-xl shadow-lg">
         <i class="fas fa-bars text-xl"></i>
     </button>
-
-    <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 hidden lg:hidden transition-opacity"></div>
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 hidden lg:hidden"></div>
 
     @include('Guru.partials.sidebar')
 
-    <main class="lg:ml-64 min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-4 md:p-6 lg:p-8">
-        <!-- Header Welcome -->
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+    <main class="lg:ml-64 p-4 md:p-6 lg:p-8 space-y-6">
+
+        {{-- HEADER --}}
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             <div>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800">📋 Dashboard Guru</h2>
-                <p class="text-gray-600 mt-1 text-lg">Kelola kelas, murid, dan pantau kehadiran dengan mudah.</p>
+                <h1 class="text-2xl font-bold text-gray-800">
+                    Selamat datang, {{ $guru->name }} 👋
+                </h1>
+                <p class="text-gray-500 text-sm mt-1">
+                    <i class="fas fa-calendar-day text-indigo-400 mr-1"></i>
+                    {{ now()->locale('id')->translatedFormat('l, d F Y') }}
+                    @if($kelas)
+                        &nbsp;·&nbsp; <span class="text-indigo-600 font-medium">Wali Kelas {{ $kelas->nama_kelas }}</span>
+                    @endif
+                </p>
             </div>
-            <div class="mt-4 md:mt-0 flex items-center space-x-3">
-                <span class="bg-white px-4 py-2 rounded-full text-sm shadow-sm border border-gray-100">
-                    <i class="far fa-calendar-alt text-indigo-500 mr-2"></i>{{ now()->format('l, d F Y') }}
-                </span>
-            </div>
-        </div>
-
-        <!-- Statistik Cards (konten asli, tidak diubah) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            <!-- Total Kelas -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-100 hover-lift overflow-hidden relative">
-                <div class="absolute top-0 right-0 w-20 h-20 bg-indigo-50 rounded-bl-full"></div>
-                <div class="p-6 relative">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Total Kelas</p>
-                            <p class="text-3xl font-bold text-gray-800 mt-1">6</p>
-                        </div>
-                        <div class="bg-gradient-to-br from-indigo-500 to-indigo-600 text-white p-4 rounded-2xl shadow-lg">
-                            <i class="fas fa-chalkboard-teacher text-2xl"></i>
-                        </div>
-                    </div>
-                    <p class="text-xs text-green-600 mt-4"><i class="fas fa-arrow-up mr-1"></i>+2 dari bulan lalu</p>
-                </div>
-            </div>
-            <!-- Total Murid -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-100 hover-lift overflow-hidden relative">
-                <div class="absolute top-0 right-0 w-20 h-20 bg-green-50 rounded-bl-full"></div>
-                <div class="p-6 relative">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Total Murid</p>
-                            <p class="text-3xl font-bold text-gray-800 mt-1">142</p>
-                        </div>
-                        <div class="bg-gradient-to-br from-green-500 to-green-600 text-white p-4 rounded-2xl shadow-lg">
-                            <i class="fas fa-user-graduate text-2xl"></i>
-                        </div>
-                    </div>
-                    <p class="text-xs text-green-600 mt-4"><i class="fas fa-arrow-up mr-1"></i>+5 dari bulan lalu</p>
-                </div>
-            </div>
-            <!-- Hadir Hari Ini -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-100 hover-lift overflow-hidden relative">
-                <div class="absolute top-0 right-0 w-20 h-20 bg-yellow-50 rounded-bl-full"></div>
-                <div class="p-6 relative">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Hadir Hari Ini</p>
-                            <p class="text-3xl font-bold text-gray-800 mt-1">98</p>
-                        </div>
-                        <div class="bg-gradient-to-br from-yellow-500 to-orange-500 text-white p-4 rounded-2xl shadow-lg">
-                            <i class="fas fa-calendar-check text-2xl"></i>
-                        </div>
-                    </div>
-                    <p class="text-xs text-yellow-600 mt-4"><i class="fas fa-clock mr-1"></i>78% kehadiran</p>
-                </div>
-            </div>
-            <!-- QR Aktif -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-100 hover-lift overflow-hidden relative">
-                <div class="absolute top-0 right-0 w-20 h-20 bg-purple-50 rounded-bl-full"></div>
-                <div class="p-6 relative">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">QR Code Aktif</p>
-                            <p class="text-3xl font-bold text-gray-800 mt-1">3</p>
-                        </div>
-                        <div class="bg-gradient-to-br from-purple-500 to-purple-600 text-white p-4 rounded-2xl shadow-lg">
-                            <i class="fas fa-qrcode text-2xl"></i>
-                        </div>
-                    </div>
-                    <p class="text-xs text-purple-600 mt-4"><i class="fas fa-sync-alt mr-1"></i>Bisa generate baru</p>
-                </div>
+            <div class="flex gap-2">
+                <a href="{{ route('guru.absensi') }}"
+                    class="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-4 py-2.5 rounded-xl text-sm font-medium hover:border-indigo-300 hover:text-indigo-600 transition shadow-sm">
+                    <i class="fas fa-clipboard-list"></i> Absensi
+                </a>
+                <a href="{{ route('guru.qrcode') }}"
+                    class="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2.5 rounded-xl text-sm font-medium shadow hover:shadow-md transition">
+                    <i class="fas fa-qrcode"></i> QR Code
+                </a>
             </div>
         </div>
 
-        <!-- Fitur Utama Cards (konten asli) -->
-        <div class="mb-8">
-            <h3 class="text-2xl font-bold text-gray-800 inline-block border-b-4 border-indigo-500 pb-2 pr-6">✨ Fitur Utama</h3>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            <a href="{{ route('guru.kelas') }}" class="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden">
-                <div class="p-6 text-center">
-                    <div class="w-20 h-20 bg-indigo-100 group-hover:bg-indigo-200 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
-                        <i class="fas fa-chalkboard-teacher text-indigo-600 group-hover:text-indigo-700 text-3xl"></i>
+        @if(!$kelas)
+            {{-- BELUM JADI WALI KELAS --}}
+            <div class="card rounded-2xl p-10 text-center">
+                <div class="w-20 h-20 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-chalkboard text-indigo-300 text-3xl"></i>
+                </div>
+                <p class="text-gray-600 font-medium">Anda belum ditugaskan sebagai wali kelas.</p>
+                <p class="text-gray-400 text-sm mt-1">Hubungi admin untuk mendapatkan kelas.</p>
+            </div>
+        @else
+
+        {{-- STAT CARDS --}}
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="card hover-lift rounded-2xl p-5">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Total Murid</p>
+                        <p class="text-3xl font-bold text-gray-800 mt-1">{{ $totalMurid }}</p>
+                        <span class="inline-flex items-center text-xs text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full mt-2">
+                            <i class="fas fa-door-open mr-1"></i> {{ $kelas->nama_kelas }}
+                        </span>
                     </div>
-                    <h4 class="text-xl font-bold text-gray-800 group-hover:text-indigo-600 transition-colors">Kelas</h4>
-                    <p class="text-sm text-gray-500 mt-2">Atur dan kelola data kelas</p>
-                </div>
-                <div class="bg-indigo-50 py-2 text-center text-indigo-600 text-sm font-medium group-hover:bg-indigo-100 transition">
-                    Kelola sekarang <i class="fas fa-arrow-right ml-1"></i>
-                </div>
-            </a>
-            <a href="#" class="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden">
-                <div class="p-6 text-center">
-                    <div class="w-20 h-20 bg-green-100 group-hover:bg-green-200 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
-                        <i class="fas fa-user-graduate text-green-600 group-hover:text-green-700 text-3xl"></i>
+                    <div class="w-11 h-11 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500">
+                        <i class="fas fa-user-graduate text-lg"></i>
                     </div>
-                    <h4 class="text-xl font-bold text-gray-800 group-hover:text-green-600 transition-colors">Murid</h4>
-                    <p class="text-sm text-gray-500 mt-2">Daftar murid dan detailnya</p>
                 </div>
-                <div class="bg-green-50 py-2 text-center text-green-600 text-sm font-medium group-hover:bg-green-100 transition">
-                    Lihat semua <i class="fas fa-arrow-right ml-1"></i>
+                <div class="progress-bar mt-4">
+                    <div class="progress-fill bg-indigo-400" style="width:100%"></div>
                 </div>
-            </a>
-            <a href="{{ route('guru.absensi') }}" class="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden">
-                <div class="p-6 text-center">
-                    <div class="w-20 h-20 bg-yellow-100 group-hover:bg-yellow-200 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
-                        <i class="fas fa-clipboard-list text-yellow-600 group-hover:text-yellow-700 text-3xl"></i>
+            </div>
+
+            <div class="card hover-lift rounded-2xl p-5">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Hadir</p>
+                        <p class="text-3xl font-bold mt-1 {{ $persenHadir >= 80 ? 'text-green-600' : ($persenHadir >= 60 ? 'text-yellow-600' : 'text-red-600') }}">{{ $hadirHariIni }}</p>
+                        <span class="inline-flex items-center text-xs px-2 py-0.5 rounded-full mt-2
+                            {{ $persenHadir >= 80 ? 'text-green-700 bg-green-50' : ($persenHadir >= 60 ? 'text-yellow-700 bg-yellow-50' : 'text-red-700 bg-red-50') }}">
+                            {{ $persenHadir }}% hari ini
+                        </span>
                     </div>
-                    <h4 class="text-xl font-bold text-gray-800 group-hover:text-yellow-600 transition-colors">Absensi</h4>
-                    <p class="text-sm text-gray-500 mt-2">Rekap kehadiran harian</p>
-                </div>
-                <div class="bg-yellow-50 py-2 text-center text-yellow-600 text-sm font-medium group-hover:bg-yellow-100 transition">
-                    Lihat rekap <i class="fas fa-arrow-right ml-1"></i>
-                </div>
-            </a>
-            <a href="{{ route('guru.qrcode') }}" class="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden">
-                <div class="p-6 text-center">
-                    <div class="w-20 h-20 bg-purple-100 group-hover:bg-purple-200 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
-                        <i class="fas fa-qrcode text-purple-600 group-hover:text-purple-700 text-3xl"></i>
+                    <div class="w-11 h-11 bg-green-50 rounded-2xl flex items-center justify-center text-green-500">
+                        <i class="fas fa-clipboard-check text-lg"></i>
                     </div>
-                    <h4 class="text-xl font-bold text-gray-800 group-hover:text-purple-600 transition-colors">QR-Code</h4>
-                    <p class="text-sm text-gray-500 mt-2">Generate & scan QR presensi</p>
                 </div>
-                <div class="bg-purple-50 py-2 text-center text-purple-600 text-sm font-medium group-hover:bg-purple-100 transition">
-                    Kelola QR <i class="fas fa-arrow-right ml-1"></i>
+                <div class="progress-bar mt-4">
+                    <div class="progress-fill" style="width:{{ $persenHadir }}%; background:{{ $persenHadir>=80?'#22c55e':($persenHadir>=60?'#eab308':'#ef4444') }}"></div>
                 </div>
-            </a>
+            </div>
+
+            <div class="card hover-lift rounded-2xl p-5">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Izin + Sakit</p>
+                        <p class="text-3xl font-bold text-yellow-600 mt-1">{{ $izinHariIni + $sakitHariIni }}</p>
+                        <span class="inline-flex items-center text-xs text-yellow-700 bg-yellow-50 px-2 py-0.5 rounded-full mt-2">
+                            {{ $izinHariIni }} izin &nbsp;·&nbsp; {{ $sakitHariIni }} sakit
+                        </span>
+                    </div>
+                    <div class="w-11 h-11 bg-yellow-50 rounded-2xl flex items-center justify-center text-yellow-500">
+                        <i class="fas fa-file-medical text-lg"></i>
+                    </div>
+                </div>
+                <div class="progress-bar mt-4">
+                    <div class="progress-fill bg-yellow-400" style="width:{{ $totalMurid>0?round((($izinHariIni+$sakitHariIni)/$totalMurid)*100):0 }}%"></div>
+                </div>
+            </div>
+
+            <div class="card hover-lift rounded-2xl p-5">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Alpha</p>
+                        <p class="text-3xl font-bold text-red-600 mt-1">{{ $alphaHariIni }}</p>
+                        <span class="inline-flex items-center text-xs text-red-700 bg-red-50 px-2 py-0.5 rounded-full mt-2">
+                            <i class="fas fa-exclamation-circle mr-1"></i> tanpa keterangan
+                        </span>
+                    </div>
+                    <div class="w-11 h-11 bg-red-50 rounded-2xl flex items-center justify-center text-red-500">
+                        <i class="fas fa-times-circle text-lg"></i>
+                    </div>
+                </div>
+                <div class="progress-bar mt-4">
+                    <div class="progress-fill bg-red-400" style="width:{{ $totalMurid>0?round(($alphaHariIni/$totalMurid)*100):0 }}%"></div>
+                </div>
+            </div>
         </div>
 
-        <!-- Dua Kolom: Aktivitas & Info (konten asli) -->
+        {{-- GRAFIK --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="lg:col-span-2 bg-white rounded-2xl shadow-md border border-gray-100 p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-xl font-bold text-gray-800 flex items-center"><i class="fas fa-history text-indigo-500 mr-2"></i> Aktivitas Presensi Terkini</h3>
-                    <a href="#" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">Lihat semua <i class="fas fa-arrow-right ml-1"></i></a>
+
+            {{-- Grafik bar 7 hari --}}
+            <div class="card rounded-2xl p-6 lg:col-span-2">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <h2 class="font-semibold text-gray-800">Kehadiran 7 Hari Terakhir</h2>
+                        <p class="text-xs text-gray-400 mt-0.5">Kelas {{ $kelas->nama_kelas }}</p>
+                    </div>
+                    <div class="flex gap-3 text-xs text-gray-500">
+                        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-indigo-500 inline-block"></span>Hadir</span>
+                        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-yellow-400 inline-block"></span>Izin/Sakit</span>
+                        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-red-400 inline-block"></span>Alpha</span>
+                    </div>
+                </div>
+                <canvas id="grafikBar" height="120"></canvas>
+            </div>
+
+            {{-- Donut chart bulan ini --}}
+            <div class="card rounded-2xl p-6 flex flex-col">
+                <div class="mb-4">
+                    <h2 class="font-semibold text-gray-800">Bulan {{ $daftarBulan[$bulan] }}</h2>
+                    <p class="text-xs text-gray-400 mt-0.5">Rekap total absensi</p>
+                </div>
+                <div class="flex-1 flex items-center justify-center">
+                    <div style="position:relative; width:180px; height:180px;">
+                        <canvas id="grafikDonut"></canvas>
+                        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
+                            <p class="text-2xl font-bold text-gray-800">{{ array_sum($grafikDonut) }}</p>
+                            <p class="text-xs text-gray-400">total</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2 mt-4 text-xs">
+                    <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span><span class="text-gray-600">Hadir <strong>{{ $grafikDonut['hadir'] }}</strong></span></div>
+                    <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-400"></span><span class="text-gray-600">Izin <strong>{{ $grafikDonut['izin'] }}</strong></span></div>
+                    <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-yellow-400"></span><span class="text-gray-600">Sakit <strong>{{ $grafikDonut['sakit'] }}</strong></span></div>
+                    <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-red-400"></span><span class="text-gray-600">Alpha <strong>{{ $grafikDonut['alpha'] }}</strong></span></div>
+                </div>
+            </div>
+        </div>
+
+        {{-- TABEL + ALPHA --}}
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            {{-- Scan terbaru hari ini --}}
+            <div class="card rounded-2xl overflow-hidden lg:col-span-2">
+                <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                    <div>
+                        <h2 class="font-semibold text-gray-800">Scan Terbaru Hari Ini</h2>
+                        <p class="text-xs text-gray-400 mt-0.5">{{ $absensiTerbaru->count() }} siswa tercatat</p>
+                    </div>
+                    <a href="{{ route('guru.absensi') }}" class="text-sm text-indigo-600 hover:underline flex items-center gap-1">
+                        Lihat semua <i class="fas fa-arrow-right text-xs"></i>
+                    </a>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead>
-                            <tr><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama Murid</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kelas</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Waktu</th><th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th></tr>
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-50/80">
+                            <tr>
+                                <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Nama</th>
+                                <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Waktu</th>
+                                <th class="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
+                            </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
-                            <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Ahmad Fauzi</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">XII IPA 1</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">07:45</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full bg-green-100 text-green-800">Hadir</span></td></tr>
-                            <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Siti Nurhaliza</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">XII IPA 2</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">07:50</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full bg-green-100 text-green-800">Hadir</span></td></tr>
-                            <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Budi Santoso</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">XII IPA 1</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">07:55</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full bg-green-100 text-green-800">Hadir</span></td></tr>
-                            <tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Dewi Lestari</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">XII IPA 2</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">08:10</td><td class="px-6 py-4 whitespace-nowrap"><span class="px-3 py-1 inline-flex text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Terlambat</span></td></tr>
+                            @forelse($absensiTerbaru as $abs)
+                                <tr class="hover:bg-indigo-50/20 transition-colors">
+                                    <td class="px-5 py-3">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center text-indigo-600 font-bold text-xs flex-shrink-0">
+                                                {{ strtoupper(substr($abs->user->name ?? '?', 0, 1)) }}
+                                            </div>
+                                            <span class="font-medium text-gray-800">{{ $abs->user->name ?? '-' }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-5 py-3 text-gray-500 text-xs">
+                                        {{ $abs->waktu_absen ? \Carbon\Carbon::parse($abs->waktu_absen)->format('H:i') : '-' }}
+                                    </td>
+                                    <td class="px-5 py-3">
+                                        @if($abs->status === 'hadir')
+                                            <span class="px-2.5 py-1 text-xs rounded-lg bg-green-50 text-green-700 font-semibold">✅ Hadir</span>
+                                        @elseif($abs->status === 'izin')
+                                            <span class="px-2.5 py-1 text-xs rounded-lg bg-blue-50 text-blue-700 font-semibold">📄 Izin</span>
+                                        @elseif($abs->status === 'sakit')
+                                            <span class="px-2.5 py-1 text-xs rounded-lg bg-yellow-50 text-yellow-700 font-semibold">🤒 Sakit</span>
+                                        @else
+                                            <span class="px-2.5 py-1 text-xs rounded-lg bg-red-50 text-red-700 font-semibold">❌ Alpha</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="px-5 py-12 text-center text-gray-400">
+                                        <i class="fas fa-qrcode text-3xl mb-2 block text-gray-200"></i>
+                                        Belum ada yang scan hari ini
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div class="space-y-6">
-                <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl border border-green-200 p-6 shadow-md">
-                    <div class="flex items-start space-x-4"><div class="bg-green-500 text-white p-3 rounded-xl shadow-lg"><i class="fab fa-whatsapp text-2xl"></i></div><div><h4 class="font-bold text-gray-800">Notifikasi WhatsApp</h4><p class="text-sm text-gray-600 mt-1">Setiap presensi akan langsung dilaporkan kepada orang tua via WhatsApp.</p><span class="inline-block mt-3 text-xs bg-green-200 text-green-800 px-3 py-1 rounded-full">Aktif</span></div></div>
+
+            {{-- Murid perlu perhatian --}}
+            <div class="card rounded-2xl overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-100">
+                    <h2 class="font-semibold text-gray-800">⚠️ Perlu Perhatian</h2>
+                    <p class="text-xs text-gray-400 mt-0.5">Paling sering alpha bulan ini</p>
                 </div>
-                <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-6">
-                    <h4 class="font-bold text-gray-800 flex items-center"><i class="fas fa-chart-line text-indigo-500 mr-2"></i> Kehadiran Minggu Ini</h4>
-                    <div class="mt-4 h-32 flex items-end space-x-2"><div class="w-1/6 bg-indigo-200 rounded-t-lg h-16 flex flex-col justify-end items-center text-xs">Sen</div><div class="w-1/6 bg-indigo-300 rounded-t-lg h-20 flex flex-col justify-end items-center text-xs">Sel</div><div class="w-1/6 bg-indigo-400 rounded-t-lg h-24 flex flex-col justify-end items-center text-xs">Rab</div><div class="w-1/6 bg-indigo-300 rounded-t-lg h-20 flex flex-col justify-end items-center text-xs">Kam</div><div class="w-1/6 bg-indigo-200 rounded-t-lg h-14 flex flex-col justify-end items-center text-xs">Jum</div><div class="w-1/6 bg-indigo-100 rounded-t-lg h-8 flex flex-col justify-end items-center text-xs">Sab</div></div>
-                    <p class="text-xs text-gray-500 mt-2 text-center">Rata-rata 85% kehadiran</p>
+                <div class="divide-y divide-gray-50">
+                    @forelse($muridAlpha as $i => $murid)
+                        <div class="px-5 py-3 flex items-center gap-3 hover:bg-red-50/30 transition">
+                            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0
+                                {{ $i === 0 ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-500' }}">
+                                {{ $i + 1 }}
+                            </span>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-800 truncate">{{ $murid->name }}</p>
+                            </div>
+                            <span class="flex-shrink-0 px-2 py-1 bg-red-50 text-red-600 text-xs font-bold rounded-lg">
+                                {{ $murid->jumlah_alpha }}x
+                            </span>
+                        </div>
+                    @empty
+                        <div class="py-10 text-center text-gray-400">
+                            <i class="fas fa-smile text-2xl mb-2 block text-green-300"></i>
+                            <p class="text-sm">Tidak ada siswa alpha<br>bulan ini!</p>
+                        </div>
+                    @endforelse
                 </div>
-                <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-6">
-                    <h4 class="font-bold text-gray-800 flex items-center"><i class="fas fa-clock text-indigo-500 mr-2"></i> Jadwal Hari Ini</h4>
-                    <ul class="mt-3 space-y-2 text-sm"><li class="flex justify-between"><span>📘 Matematika</span><span class="text-gray-500">07:30 - 09:00</span></li><li class="flex justify-between"><span>📗 Fisika</span><span class="text-gray-500">09:15 - 10:45</span></li><li class="flex justify-between"><span>📙 Kimia</span><span class="text-gray-500">11:00 - 12:30</span></li></ul>
+                @if($muridAlpha->count() > 0)
+                <div class="px-5 py-3 border-t border-gray-50">
+                    <a href="{{ route('guru.absensi') }}" class="text-xs text-indigo-600 hover:underline flex items-center gap-1">
+                        Kelola absensi <i class="fas fa-arrow-right text-xs"></i>
+                    </a>
                 </div>
+                @endif
             </div>
         </div>
+
+        @endif {{-- end if $kelas --}}
 
         @include('Guru.partials.footer')
     </main>
 
-    <script>
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        const toggleBtn = document.getElementById('sidebarToggle');
-        const closeBtn = document.getElementById('closeSidebar');
+<script>
+@if($kelas)
+    // ── Grafik Bar 7 hari ──────────────────────────────────────────
+    const labels7  = @json(collect($grafikHarian)->pluck('label'));
+    const dataHadir  = @json(collect($grafikHarian)->pluck('hadir'));
+    const dataIzinSakit = @json(collect($grafikHarian)->map(fn($d) => $d['izin'] + $d['sakit']));
+    const dataAlpha  = @json(collect($grafikHarian)->pluck('alpha'));
 
-        function updateToggleVisibility() {
-            if (window.innerWidth >= 1024) {
-                if (toggleBtn) toggleBtn.style.display = 'none';
-            } else {
-                const isSidebarClosed = sidebar.classList.contains('-translate-x-full');
-                toggleBtn.style.display = isSidebarClosed ? 'flex' : 'none';
+    new Chart(document.getElementById('grafikBar'), {
+        type: 'bar',
+        data: {
+            labels: labels7,
+            datasets: [
+                { label: 'Hadir',      data: dataHadir,     backgroundColor: 'rgba(99,102,241,0.75)', borderRadius: 6, borderSkipped: false },
+                { label: 'Izin/Sakit', data: dataIzinSakit, backgroundColor: 'rgba(234,179,8,0.6)',   borderRadius: 6, borderSkipped: false },
+                { label: 'Alpha',      data: dataAlpha,     backgroundColor: 'rgba(239,68,68,0.55)',  borderRadius: 6, borderSkipped: false },
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, stacked: false, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { stepSize: 1 } },
+                x: { grid: { display: false } }
             }
         }
+    });
 
-        function openSidebar() {
-            sidebar.classList.remove('-translate-x-full');
-            overlay.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-            updateToggleVisibility();
+    // ── Donut chart bulan ini ──────────────────────────────────────
+    const donutData = @json($grafikDonut);
+    new Chart(document.getElementById('grafikDonut'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Hadir', 'Izin', 'Sakit', 'Alpha'],
+            datasets: [{
+                data: [donutData.hadir, donutData.izin, donutData.sakit, donutData.alpha],
+                backgroundColor: ['#6366f1', '#60a5fa', '#facc15', '#f87171'],
+                borderWidth: 0,
+                hoverOffset: 6,
+            }]
+        },
+        options: {
+            cutout: '72%',
+            plugins: { legend: { display: false }, tooltip: { callbacks: {
+                label: ctx => ` ${ctx.label}: ${ctx.parsed}`
+            }}}
         }
+    });
+@endif
 
-        function closeSidebar() {
-            sidebar.classList.add('-translate-x-full');
-            overlay.classList.add('hidden');
-            document.body.style.overflow = '';
-            updateToggleVisibility();
-        }
+    // Sidebar toggle mobile
+    const sidebar   = document.getElementById('sidebar');
+    const overlay   = document.getElementById('sidebarOverlay');
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const closeBtn  = document.getElementById('closeSidebar');
 
-        if (toggleBtn) toggleBtn.addEventListener('click', openSidebar);
-        if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
-        if (overlay) overlay.addEventListener('click', closeSidebar);
-
-        window.addEventListener('resize', () => {
-            if (window.innerWidth >= 1024) {
-                sidebar.classList.remove('-translate-x-full');
-                overlay.classList.add('hidden');
-                document.body.style.overflow = '';
-            } else {
-                sidebar.classList.add('-translate-x-full');
-            }
-            updateToggleVisibility();
-        });
-
-        if (window.innerWidth < 1024) sidebar.classList.add('-translate-x-full');
-        updateToggleVisibility();
-    </script>
+    toggleBtn?.addEventListener('click', () => {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+    });
+    [overlay, closeBtn].forEach(el => el?.addEventListener('click', () => {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+    }));
+    if (window.innerWidth < 1024) sidebar.classList.add('-translate-x-full');
+</script>
 </body>
 </html>

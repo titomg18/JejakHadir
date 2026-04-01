@@ -27,6 +27,13 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware('role:admin')->group(function () {
         Route::get('/admin/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
 
+        Route::get('/admin/pengaturan', [App\Http\Controllers\Admin\PengaturanController::class, 'index'])->name('admin.pengaturan');
+        Route::post('/admin/pengaturan/profil', [App\Http\Controllers\Admin\PengaturanController::class, 'simpanProfil'])->name('admin.pengaturan.profil');
+        Route::post('/admin/pengaturan/jam', [App\Http\Controllers\Admin\PengaturanController::class, 'simpanJam'])->name('admin.pengaturan.jam');
+        Route::post('/admin/pengaturan/libur', [App\Http\Controllers\Admin\PengaturanController::class, 'tambahLibur'])->name('admin.pengaturan.libur.tambah');
+        Route::delete('/admin/pengaturan/libur/{id}', [App\Http\Controllers\Admin\PengaturanController::class, 'hapusLibur'])->name('admin.pengaturan.libur.hapus');
+        Route::post('/admin/pengaturan/wa', [App\Http\Controllers\Admin\PengaturanController::class, 'simpanNotifWa'])->name('admin.pengaturan.wa');
+
         Route::get('/admin/laporan', [App\Http\Controllers\Admin\LaporanAbsensiController::class, 'index'])->name('admin.laporan');
 
         Route::prefix('admin/users')->group(function () {
@@ -63,7 +70,7 @@ Route::middleware(['auth'])->group(function () {
 
     // ===================== GURU ROUTES =====================
     Route::middleware('role:guru')->group(function () {
-        Route::get('/guru/dashboard', fn() => view('Guru.dashboard'))->name('guru.dashboard');
+        Route::get('/guru/dashboard', [App\Http\Controllers\Guru\DashboardController::class, 'index'])->name('guru.dashboard');
         Route::get('/guru/kelas', [GuruKelasController::class, 'index'])->name('guru.kelas');
         Route::get('/guru/absensi', [App\Http\Controllers\Guru\AbsensiController::class, 'index'])->name('guru.absensi');
         Route::post('/guru/absensi/{userId}/update', [App\Http\Controllers\Guru\AbsensiController::class, 'updateStatus'])->name('guru.absensi.update');

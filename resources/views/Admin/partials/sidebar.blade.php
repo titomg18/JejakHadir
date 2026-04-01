@@ -52,7 +52,7 @@
                 <i class="fas fa-file-alt"></i>
                 <span class="ml-3">Laporan</span>
             </a>
-            <a href="#" class="menu-item flex items-center px-4 py-3 text-gray-600">
+            <a href="{{ route('admin.pengaturan') }}" class="menu-item flex items-center px-4 py-3 {{ request()->routeIs('admin.pengaturan*') ? 'active text-gray-700' : 'text-gray-600' }}">
                 <i class="fas fa-cog"></i>
                 <span class="ml-3">Pengaturan</span>
             </a>
